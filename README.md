@@ -1,5 +1,7 @@
 # Treue_Technologies_EmailSpamDetection
 
+![EmailSpam](https://github.com/AnujPathekar/Images/blob/main/EmailSpamDetection.jpg)
+
 # <u>Objective</u> - The objective of this project is to create an email spam detection system that uses machine learning algorithms to classify incoming emails. By training the model on a labeled dataset of spam and non-spam emails, we aim to develop an accurate and efficient spam detector that can reliably identify and categorize emails based on their content and characteristics.
 
 # Loading Data
