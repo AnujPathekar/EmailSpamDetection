@@ -1,4 +1,4 @@
-name: Python Package using Conda
+name: Threatrix Code Scan
 
 on:
   push:
@@ -9,45 +9,18 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-linux:
+  threatrix-scan:
     runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 5
 
     steps:
     - uses: actions/checkout@v3
 
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.10'
-
-    - name: Install Miniconda
-      uses: conda-incubator/setup-miniconda@v2
-      with:
-        auto-update-conda: true
-
-    - name: Install dependencies
-      run: conda env update --file environment.yml --name base
-
-    - name: Lint with flake8
+    - name: Download and Run Threatrix Agent
       run: |
-        conda install flake8
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-
-    - name: Test with pytest
-      run: |
-        conda install pytest
-        pytest
-
-  execute-scan-workflow:
-    uses: threatrix/threat-agent-scan/.github/workflows/scan-repo-reusable.yaml@master
-    with:
-      app-name: YOUR_PROJECT_NAME
-      trx-host: https://app.threatrix.io
-    secrets:
-      TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      THREATRIX_EID: ${{ secrets.THREATRIX_EID }}
-      THREATRIX_OID: ${{ secrets.THREATRIX_OID }}
-      THREATRIX_SERVER_API_KEY: ${{ secrets.THREATRIX_API_KEY }}
+        curl -LJO https://github.com/threatrix/threat-matrix/releases/download/agent-release-latest/threat-agent-latest.jar
+        java -jar threat-agent-latest.jar ./
+      env:
+        TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        THREATRIX_EID: ${{ secrets.THREATRIX_EID }}
+        THREATRIX_OID: ${{ secrets.THREATRIX_OID }}
+        THREATRIX_API_KEY: ${{ secrets.THREATRIX_API_KEY }}
